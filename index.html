@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+   <h1>todo</h1>
+   <form onsubmit="save(event)">
+    <label for="todo">TODO</label>
+   <input type="text" id="todo" name="todo">  
+   <label for="description">DESCRIPTION</label>
+   <input type="text" id="description" name="description"> 
+   <BUTTON>SUBMIT</BUTTON>
+   </form>
+   <h3>Todo Remaining</h3>
+   <ul id="todorem">
+   </ul>
+   <h3>Todo Done</h3>
+   <ul id="done">
+
+   </ul>
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <script>
+    function save(event){
+        event.preventDefault();
+        const todo=event.target.todo.value;
+        const des=event.target.description.value;
+        const obj={
+            todo,
+            des
+        };
+        axios.post("http://localhost:4000/todo/addtodo",obj)
+        .then(res=>{
+            console.log(res);
+            screen(res.data.newtodo);
+        })
+        .catch(err=>console.log(err));
+        
+    }
+    function screen(obj){
+        let parent=document.getElementById("todorem");
+        let child=document.createElement("li");
+        child.textContent=obj.todo+ " - "+obj.description;
+        const done=document.createElement("input");
+        done.type="button";
+        done.value="done";
+        done.onclick=()=>{
+            const id=obj.id;
+            axios.post(`http://localhost:4000/todo/done/${id}`,obj)
+            .then(res=>console.log(res))
+            .catch(err=>console.log(err));
+        }
+        const delet=document.createElement("input");
+        delet.type="button";
+        delet.value="delete";
+        delet.onclick=()=>{
+                console.log(1);
+        }
+        child.appendChild(done);
+        child.appendChild(delet);
+        parent.appendChild(child);
+
+       
+    }
+    window.addEventListener("DOMContentLoaded",()=>{
+    axios.get("http://localhost:4000/todo/getalltodo")
+        .then((res)=>{
+            console.log(res);
+            for(let i=0;i<res.data.alluser.length;i++){
+                screen(res.data.alluser[i])
+            }
+        })
+        .catch((err)=>console.log(err));
+    })
+   </script>
+   
+</body>
+</html>

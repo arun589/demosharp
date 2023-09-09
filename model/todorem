@@ -1,0 +1,18 @@
+const sequelize=require('../util/database');
+const Sequelize=require('sequelize');
+const remaining=sequelize.define("todoRemaining",{
+    id:{
+        type:Sequelize.INTEGER,
+        autoIncrement:true,
+        primaryKey:true
+    },
+    todo:{
+        type:Sequelize.STRING,
+        allowNull:true,
+    },
+    description:{
+        type:Sequelize.INTEGER,
+        unique:true
+    }
+})
+module.exports=remaining
